@@ -94,8 +94,12 @@ public class Notifications extends ContextWrapper {
     private Notification.Action stopAction() {
         if (mStopAction == null) {
             Intent intent = new Intent(ACTION_STOP).setPackage(getPackageName());
+            int flags = PendingIntent.FLAG_ONE_SHOT;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                flags |= PendingIntent.FLAG_IMMUTABLE;
+            }
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1,
-                    intent, PendingIntent.FLAG_ONE_SHOT);
+                    intent, flags);
             mStopAction = new Notification.Action(android.R.drawable.ic_media_pause, "Stop", pendingIntent);
         }
         return mStopAction;

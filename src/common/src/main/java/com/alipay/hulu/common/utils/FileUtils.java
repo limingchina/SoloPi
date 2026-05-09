@@ -148,8 +148,17 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
                 SOLOPI_FOLDER_NAME = SPService.getString(SPService.KEY_SOLOPI_PATH_NAME, "solopi");
             }
 
-            solopiBaseDir = new File(Environment.getExternalStorageDirectory(), SOLOPI_FOLDER_NAME);
+            // Android 10+ (API 29+) prefers getExternalFilesDir to avoid EPERM
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                File externalFilesDir = LauncherApplication.getInstance().getExternalFilesDir(null);
+                if (externalFilesDir != null) {
+                    solopiBaseDir = new File(externalFilesDir, SOLOPI_FOLDER_NAME);
+                }
+            }
 
+            if (solopiBaseDir == null) {
+                solopiBaseDir = new File(Environment.getExternalStorageDirectory(), SOLOPI_FOLDER_NAME);
+            }
         }
         if (!solopiBaseDir.exists()) {
             solopiBaseDir.mkdirs();

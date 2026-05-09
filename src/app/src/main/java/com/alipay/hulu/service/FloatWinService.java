@@ -514,7 +514,11 @@ public class FloatWinService extends BaseService {
 		// 通过PendingIntent由外部启动较快
 		Intent intent = new Intent(FloatWinService.this, IndexActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		PendingIntent pendingIntent = PendingIntent.getActivity(FloatWinService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			flags |= PendingIntent.FLAG_IMMUTABLE;
+		}
+		PendingIntent pendingIntent = PendingIntent.getActivity(FloatWinService.this, 0, intent, flags);
 		try{
             pendingIntent.send();
         } catch (PendingIntent.CanceledException e) {

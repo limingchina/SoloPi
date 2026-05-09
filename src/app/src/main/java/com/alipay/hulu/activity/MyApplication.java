@@ -227,7 +227,11 @@ public class MyApplication extends LauncherApplication {
                 intent.putExtra("data", id);
             }
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                flags |= PendingIntent.FLAG_IMMUTABLE;
+            }
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, flags);
             try {
                 pendingIntent.send();
             } catch (PendingIntent.CanceledException e) {
@@ -245,7 +249,11 @@ public class MyApplication extends LauncherApplication {
             LargeObjectHolder.getInstance().setReplayResults(resultBeans);
             Intent intent = new Intent(context, BatchReplayResultActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                flags |= PendingIntent.FLAG_IMMUTABLE;
+            }
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, flags);
             try{
                 pendingIntent.send();
             } catch (PendingIntent.CanceledException e) {
@@ -522,17 +530,19 @@ public class MyApplication extends LauncherApplication {
             @Override
             public void onAppCrash(Thread t, Throwable e) {
                 File errorDir = FileUtils.getSubDir("error");
+                if (errorDir == null) {
+                    LogUtil.e(TAG, "Failed to get error directory");
+                    return;
+                }
                 File outputFile = new File(errorDir, System.currentTimeMillis() + ".log");
-                try {
-                    FileWriter writer = new FileWriter(outputFile);
-                    PrintWriter printWriter = new PrintWriter(writer);
+                try (FileWriter writer = new FileWriter(outputFile);
+                     PrintWriter printWriter = new PrintWriter(writer)) {
                     printWriter.println("故障线程：" + t.getName());
                     printWriter.println("故障日志：");
                     e.printStackTrace(printWriter);
                     printWriter.flush();
-                    printWriter.close();
                 } catch (IOException e1) {
-                    LogUtil.e(TAG, "Catch java.io.IOException: " + e1.getMessage(), e);
+                    LogUtil.e(TAG, "Failed to write crash log: " + e1.getMessage(), e1);
                 }
             }
         });

@@ -1241,7 +1241,11 @@ public abstract class LauncherApplication extends Application {
 
             // pending intent跳回去
             Intent intent = getPackageManager().getLaunchIntentForPackage(getPackageName());
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                flags |= PendingIntent.FLAG_IMMUTABLE;
+            }
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, flags);
             try {
                 pendingIntent.send();
             } catch (PendingIntent.CanceledException e) {
