@@ -4,16 +4,17 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion '26.0.2'
+    namespace 'com.android.floatwindowpermission'
+    compileSdk rootProject.ext.compileSdk
+
     defaultConfig {
-        minSdkVersion 13
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdk 13
+        targetSdk rootProject.ext.targetSdk
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
-    lintOptions {
+    lint {
         abortOnError false
     }
     buildTypes {

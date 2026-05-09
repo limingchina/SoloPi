@@ -440,7 +440,7 @@ public class AccessibilityProvider implements AbstractProvider {
      * 重启辅助功能
      */
     private void restartAccessibilityService() {
-        LauncherApplication.getInstance().showToast(StringUtil.getString(R.string.permission__restarting_accessibility));
+        LauncherApplication.getInstance().showToast(StringUtil.getString(com.alipay.hulu.common.R.string.permission__restarting_accessibility));
         // 关uiautomator
         cleanInstrumentationAndUiAutomator();
 
@@ -479,7 +479,7 @@ public class AccessibilityProvider implements AbstractProvider {
      * 重启辅助功能
      */
     private void simpleRestartAccessibilityService() {
-        LauncherApplication.getInstance().showToast(R.string.permission__restarting_accessibility);
+        LauncherApplication.getInstance().showToast(com.alipay.hulu.common.R.string.permission__restarting_accessibility);
 
         // 切换回TalkBack
         CmdTools.putAccessibility("enabled_accessibility_services", "com.android.talkback/com.google.android.marvin.talkback.TalkBackService");

@@ -1,11 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    namespace 'com.codebutler.android_websockets'
+    compileSdk rootProject.ext.compileSdk
+
     defaultConfig {
-        minSdkVersion 17
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdk 17
+        targetSdk rootProject.ext.targetSdk
         versionCode 1
         versionName "1.0"
     }
@@ -16,9 +17,11 @@ android {
         }
     }
 
-    packagingOptions {
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/DEPENDENCIES'
+    packaging {
+        resources {
+            excludes += 'META-INF/LICENSE'
+            excludes += 'META-INF/DEPENDENCIES'
+        }
     }
 }
 

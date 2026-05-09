@@ -16,13 +16,16 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    namespace 'com.alipay.hulu.common'
+    compileSdk rootProject.ext.compileSdk
 
+    buildFeatures {
+        buildConfig = true
+    }
 
     defaultConfig {
-        minSdkVersion 18
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdk 18
+        targetSdk rootProject.ext.targetSdk
         versionCode 1
         versionName "1.0"
 
@@ -37,7 +40,6 @@ android {
             consumerProguardFiles 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {

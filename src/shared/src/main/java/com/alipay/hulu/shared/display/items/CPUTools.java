@@ -136,9 +136,9 @@ public class CPUTools implements Displayable{
 			try {
 				float[] result = getPidsUsage(new int[]{pid});
 				if (result.length == 1) {
-					return StringUtil.getString(R.string.constant__global) + ':' +df.format(result[0]) + '%';
+					return StringUtil.getString(com.alipay.hulu.common.R.string.constant__global) + ':' +df.format(result[0]) + '%';
 				} else if (result.length == 2) {
-					return StringUtil.getString(R.string.constant__app) + ':' + df.format(result[0]) + '%' + StringUtil.getString(R.string.constant__global) + ':' + df.format(result[1]) + '%';
+					return StringUtil.getString(com.alipay.hulu.common.R.string.constant__app) + ':' + df.format(result[0]) + '%' + StringUtil.getString(com.alipay.hulu.common.R.string.constant__global) + ':' + df.format(result[1]) + '%';
 				}
 				return "-";
 			} catch (Exception e) {
@@ -150,7 +150,7 @@ public class CPUTools implements Displayable{
         if (result < 0) {
             return "-";
         }
-		return StringUtil.getString(R.string.constant__global) + ':' + df.format(result) + '%';
+		return StringUtil.getString(com.alipay.hulu.common.R.string.constant__global) + ':' + df.format(result) + '%';
 	}
 
 	@Override

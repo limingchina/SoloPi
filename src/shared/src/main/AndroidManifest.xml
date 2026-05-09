@@ -23,7 +23,8 @@
     <application
         tools:node="merge">
         <service android:name=".event.accessibility.AccessibilityServiceImpl"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="true">
             <intent-filter>
 
                 <!-- android:name必须是以下这个名字 -->

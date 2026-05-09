@@ -16,13 +16,20 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
-    defaultConfig {
-        minSdkVersion 18
-        targetSdkVersion rootProject.ext.targetSdkVersion
+    namespace 'com.alipay.hulu'
+    compileSdk rootProject.ext.compileSdk
+
+    buildFeatures {
+        buildConfig = true
     }
-    lintOptions {
+
+    defaultConfig {
+        minSdk 18
+        targetSdk rootProject.ext.targetSdk
+        buildConfigField "int", "VERSION_CODE", "${rootProject.ext.appVersionCode}"
+        buildConfigField "String", "VERSION_NAME", "\"${rootProject.ext.appVersionName}\""
+    }
+    lint {
         abortOnError false
     }
     buildTypes {

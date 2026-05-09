@@ -62,7 +62,8 @@
             android:label="@string/app_name"
             android:logo="@drawable/solopi_main"
             android:screenOrientation="unspecified"
-            android:theme="@style/AppNoTitleBarTheme">
+            android:theme="@style/AppNoTitleBarTheme"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -144,7 +145,8 @@
         <service android:name=".screenRecord.SimpleRecordService"
             android:foregroundServiceType="mediaProjection" />
 
-        <receiver android:name=".service.InstallReceiver" >
+        <receiver android:name=".service.InstallReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
