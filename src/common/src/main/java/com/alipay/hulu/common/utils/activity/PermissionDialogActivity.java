@@ -1188,8 +1188,9 @@ public class PermissionDialogActivity extends Activity implements View.OnClickLi
                 int result = grantResults[i];
                 if (result != PackageManager.PERMISSION_GRANTED) {
                     LogUtil.i(TAG, "用户不授权%s权限", permissions[i]);
-                    // 重新去检查权限
-                    processSinglePermission();
+                    // 避免无限循环，直接返回失败
+                    finish();
+                    PermissionUtil.onPermissionResult(currentPermissionIdx, false, "用户不进行授权");
                     return;
                 }
             }

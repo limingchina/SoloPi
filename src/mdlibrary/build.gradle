@@ -22,6 +22,6 @@ android {
 }
 
 dependencies {
-    implementation 'com.linkedin.dexmaker:dexmaker:2.19.1'
+    implementation 'com.linkedin.dexmaker:dexmaker:2.28.6'
     compileOnly "androidx.appcompat:appcompat:${ANDROIDX_APPCOMPAT_VERSION}"
 }

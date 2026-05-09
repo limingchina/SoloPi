@@ -20,6 +20,7 @@ import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 import android.graphics.Rect;
 import android.media.MediaCodecInfo;
 import android.media.projection.MediaProjection;
@@ -146,7 +147,11 @@ public class RecordService extends BaseService {
         createView();
 
         Notification notification = generateNotificationBuilder().setContentText(getString(R.string.service_notification__solopi_record_running)).setSmallIcon(R.drawable.solopi_main).build();
-        startForeground(RECORD_SERVICE_NOTIFICATION_ID, notification);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(RECORD_SERVICE_NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION);
+        } else {
+            startForeground(RECORD_SERVICE_NOTIFICATION_ID, notification);
+        }
 
 
         mMediaProjectionManager = (MediaProjectionManager)getSystemService(Context.MEDIA_PROJECTION_SERVICE);

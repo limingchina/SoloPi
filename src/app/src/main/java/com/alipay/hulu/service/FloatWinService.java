@@ -24,6 +24,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Binder;
@@ -260,7 +261,11 @@ public class FloatWinService extends BaseService {
 		LogUtil.d(TAG, "onCreate");
 
 		Notification notification = generateNotificationBuilder().setContentText(getString(R.string.float__toast_title)).setSmallIcon(R.drawable.solopi_main).build();
-		startForeground(NOTIFICATION_ID, notification);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+			startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+		} else {
+			startForeground(NOTIFICATION_ID, notification);
+		}
 
 		handler = new TimeProcessHandler(this);
 
