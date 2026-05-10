@@ -240,16 +240,74 @@ public class GameFpsTools implements Displayable {
         String output = CmdTools.execHighPrivilegeCmd("dumpsys SurfaceFlinger --list");
         if (StringUtil.isEmpty(output)) return null;
 
+        boolean hasBlast = output.contains("(BLAST)");
         String[] lines = output.split("\n");
         List<String> matchingLines = new ArrayList<>();
         boolean hasSurfaceView = false;
 
         for (String line : lines) {
-            if (StringUtil.isEmpty(line)) continue;
-            if (line.contains(targetApp)) {
-                matchingLines.add(line);
+            line = line.trim();
+            if (line.isEmpty()) continue;
+
+            // When BLAST is present, only process BLAST layer lines
+            if (hasBlast && !line.contains("(BLAST)")) {
+                continue;
             }
-            if (line.trim().equals("SurfaceView")) {
+
+            String processed = line;
+            // If the output is in RequestedLayerState format, extract the actual layer name
+            if (processed.contains("RequestedLayerState")) {
+                int svIdx = processed.indexOf("SurfaceView");
+                if (svIdx >= 0) {
+                    // Optimized extraction for SurfaceView layers in RequestedLayerState
+                    int startIdx = 0;
+                    int openBraceIdx = processed.lastIndexOf('{', svIdx);
+                    if (openBraceIdx >= 0) {
+                        startIdx = openBraceIdx + 1;
+                    }
+
+                    int endIdx = processed.length();
+                    int closeBraceIdx = processed.indexOf('}', svIdx);
+                    if (closeBraceIdx >= 0) {
+                        endIdx = closeBraceIdx;
+                    }
+
+                    // Check for trailing properties like " parentId="
+                    int searchStart = svIdx;
+                    while (true) {
+                        int nextSpace = processed.indexOf(' ', searchStart);
+                        if (nextSpace < 0 || nextSpace >= endIdx) break;
+
+                        int nextEqual = processed.indexOf('=', nextSpace);
+                        if (nextEqual > nextSpace && nextEqual < endIdx) {
+                            endIdx = nextSpace;
+                            break;
+                        }
+                        searchStart = nextSpace + 1;
+                    }
+                    processed = processed.substring(startIdx, endIdx).trim();
+                } else {
+                    // Fallback for non-SurfaceView RequestedLayerState
+                    int braceIdx = processed.indexOf('{');
+                    if (braceIdx != -1) {
+                        int endBraceIdx = processed.lastIndexOf('}');
+                        String content = (endBraceIdx > braceIdx)
+                                ? processed.substring(braceIdx + 1, endBraceIdx)
+                                : processed.substring(braceIdx + 1);
+                        String[] parts = content.trim().split("\\s+");
+                        if (parts.length >= 2 && !parts[1].contains("=")) {
+                            processed = parts[1];
+                        } else if (parts.length >= 1) {
+                            processed = parts[0];
+                        }
+                    }
+                }
+            }
+
+            if (line.contains(targetApp)) {
+                matchingLines.add(processed);
+            }
+            if (processed.equals("SurfaceView")) {
                 hasSurfaceView = true;
             }
         }
@@ -257,12 +315,12 @@ public class GameFpsTools implements Displayable {
         String selectedLayer = null;
         if (!matchingLines.isEmpty()) {
             // Default: last matching layer
-            selectedLayer = matchingLines.get(matchingLines.size() - 1).trim();
-            // Prefer the last layer whose name starts with "SurfaceView"
+            selectedLayer = matchingLines.get(matchingLines.size() - 1);
+            // Prefer the last layer whose name contains "SurfaceView"
             for (int i = matchingLines.size() - 1; i >= 0; i--) {
-                String trimmed = matchingLines.get(i).trim();
-                if (trimmed.startsWith("SurfaceView")) {
-                    selectedLayer = trimmed;
+                String current = matchingLines.get(i);
+                if (current.contains("SurfaceView")) {
+                    selectedLayer = current;
                     break;
                 }
             }
