@@ -26,6 +26,7 @@ public enum FinalR {
     RESPONSE_TIME(R.string.performance__response_time),
     FPS(R.string.performance__framerate),
     GAME_FPS(R.string.performance__game_fps),
+    GL_FPS(R.string.performance__gl_fps),
     BATTERY(R.string.performance__battery),
     MEMORY(R.string.performance__memory),
     NETWORK(R.string.performance__network),

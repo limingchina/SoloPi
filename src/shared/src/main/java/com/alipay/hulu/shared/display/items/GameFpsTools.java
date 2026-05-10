@@ -240,32 +240,71 @@ public class GameFpsTools implements Displayable {
         String output = CmdTools.execHighPrivilegeCmd("dumpsys SurfaceFlinger --list");
         if (StringUtil.isEmpty(output)) return null;
 
+        boolean hasBlast = output.contains("(BLAST)");
         String[] lines = output.split("\n");
-        List<String> matchingLines = new ArrayList<>();
+        List<String> matchingLayers = new ArrayList<>();
         boolean hasSurfaceView = false;
 
         for (String line : lines) {
-            if (StringUtil.isEmpty(line)) continue;
-            if (line.contains(targetApp)) {
-                matchingLines.add(line);
-            }
-            if (line.trim().equals("SurfaceView")) {
+            line = line.trim();
+            if (line.isEmpty()) continue;
+
+            if (line.equals("SurfaceView")) {
                 hasSurfaceView = true;
+            }
+
+            // Must contain targetApp and SurfaceView; exclude Background
+            if (!line.contains(targetApp) || !line.contains("SurfaceView") || line.contains("Background")) {
+                continue;
+            }
+
+            // Prioritize (BLAST) layers if present in the output
+            if (hasBlast && !line.contains("(BLAST)")) {
+                continue;
+            }
+
+            int svIdx = line.indexOf("SurfaceView");
+
+            // Extract layer name: handle "SurfaceView[...]" or "23a410c SurfaceView[...]"
+            // often found in "RequestedLayerState{...}" or similar verbose formats.
+            int startIdx = 0;
+            int openBraceIdx = line.lastIndexOf('{', svIdx);
+            if (openBraceIdx >= 0) {
+                startIdx = openBraceIdx + 1;
+            }
+
+            // Find the end: usually before " key=" or at '}'
+            int endIdx = line.length();
+            int closeBraceIdx = line.indexOf('}', svIdx);
+            if (closeBraceIdx >= 0) {
+                endIdx = closeBraceIdx;
+            }
+
+            // Check for trailing properties like " parentId="
+            int searchStart = svIdx;
+            while (true) {
+                int nextSpace = line.indexOf(' ', searchStart);
+                if (nextSpace < 0 || nextSpace >= endIdx) break;
+
+                // If space is followed by something like "parentId=", it's the end
+                int nextEqual = line.indexOf('=', nextSpace);
+                if (nextEqual > nextSpace && nextEqual < line.length()) {
+                    endIdx = nextSpace;
+                    break;
+                }
+                searchStart = nextSpace + 1;
+            }
+
+            String extracted = line.substring(startIdx, endIdx).trim();
+            if (!extracted.isEmpty()) {
+                matchingLayers.add(extracted);
             }
         }
 
         String selectedLayer = null;
-        if (!matchingLines.isEmpty()) {
-            // Default: last matching layer
-            selectedLayer = matchingLines.get(matchingLines.size() - 1).trim();
-            // Prefer the last layer whose name starts with "SurfaceView"
-            for (int i = matchingLines.size() - 1; i >= 0; i--) {
-                String trimmed = matchingLines.get(i).trim();
-                if (trimmed.startsWith("SurfaceView")) {
-                    selectedLayer = trimmed;
-                    break;
-                }
-            }
+        if (!matchingLayers.isEmpty()) {
+            // Use the last matching layer (likely the most recent/relevant)
+            selectedLayer = matchingLayers.get(matchingLayers.size() - 1);
         } else if (hasSurfaceView) {
             selectedLayer = "SurfaceView";
         }

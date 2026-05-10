@@ -109,6 +109,7 @@
     <string name="performance__response_time">Response Time</string>
     <string name="performance__framerate">Frame Rate</string>
     <string name="performance__game_fps">Game FPS</string>
+    <string name="performance__gl_fps">GL FPS</string>
     <string name="performance__battery">Battery</string>
     <string name="performance__network">Network</string>
     <string name="downloading__assets">Asset downloading…\n%dKB/%dKB</string>
@@ -150,6 +151,18 @@
     <string name="display_fps__current_info_activity">Framerate:%d/Jank Count:%d/Max Jank Time:%dms/Jank Percentage:%.2f%%\n%s</string>
     <string name="display_fps__current_info">Framerate:%d/Jank Count:%d/Max Jank Time:%dms/Jank Percentage:%.2f%%</string>
     <string name="display_gamefps__current_info">Framerate:%d/Jank Count:%d/Max Jank Time:%dms/Jank Percentage:%.2f%%</string>
+    <string name="display_glfps__current_info">Frame Rate: %d</string>
+    <string name="display_glfps__no_view">No OpenGL view detected</string>
+    <string name="display_glfps__select_layer">Select OpenGL View</string>
+    <string name="display_glfps__no_gl_view">Target app has no OpenGL view</string>
+    <string name="display_glfps__framerate">OpenGL Frame Rate</string>
+    <string name="display_glfps__jank_count">Jank Count</string>
+    <string name="display_glfps__jank_percent">Jank Percentage</string>
+    <string name="display_glfps__max_frame_time">Max Frame Time</string>
+    <string name="display_glfps__stutter_count">Stutter Count</string>
+    <string name="display_glfps__severe_stutter_count">Severe Stutter Count</string>
+    <string name="display_glfps__stutter_percent">Stutter Percentage</string>
+    <string name="display_glfps__skip_frame_count">Dropped Frames</string>
     <string name="display_memory__total_usage">Total Usage</string>
     <string name="display_memory__current_info">Available:%dMB/Total:%dMB</string>
     <string name="display_network__current_info">%s:Down%.1fK/Accum%.1fK\n%s:Up%.1fK/Accum%.1fK</string>
